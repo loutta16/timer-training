@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Timer de entrenamiento: Rondas, Tabata y Cronómetro. Presets de Boxeo, Kickboxing, Muay Thai y MMA.">
+  <meta name="theme-color" content="#0f1115">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Timer Training">
+  <title>Timer Training</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body data-pantalla="inicio">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-atras" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-ajustes" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></g></symbol>
+    <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-pausa" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-saltar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6l7 6-7 6z"/><path d="M18 6v12"/></g></symbol>
+    <symbol id="i-reiniciar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></g></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></symbol>
+    <symbol id="i-menos" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-mas" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-editar" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-borrar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></g></symbol>
+  </svg>
+
+  <main id="app">
+    <!-- INICIO -->
+    <section id="pantalla-inicio" class="pantalla" aria-labelledby="titulo-app">
+      <header class="barra">
+        <h1 id="titulo-app" class="marca">Timer<span>Training</span></h1>
+        <button class="icono" data-ir="ajustes" aria-label="Ajustes"><svg><use href="#i-ajustes"/></svg></button>
+      </header>
+      <div class="contenido">
+        <div class="modos">
+          <button class="modo" data-modo="rondas" style="--acento: var(--c-entrenar)">
+            <span class="modo-nombre">Rondas</span>
+            <span class="modo-desc">Entrenar + descansar. Boxeo, Kickboxing, Muay Thai, MMA.</span>
+          </button>
+          <button class="modo" data-modo="tabata" style="--acento: var(--c-descanso-ciclos)">
+            <span class="modo-nombre">Tabata</span>
+            <span class="modo-desc">Rondas agrupadas en ciclos, con descanso entre ciclos.</span>
+          </button>
+          <button class="modo" data-modo="cronometro" style="--acento: var(--c-enfriamiento)">
+            <span class="modo-nombre">Cronómetro</span>
+            <span class="modo-desc">Cuenta hacia adelante y suena en cada lapso.</span>
+          </button>
+        </div>
+
+        <div id="bloque-propios-inicio" hidden>
+          <div class="titulo-seccion">
+            <h2>Mis presets</h2>
+            <button class="enlace" data-ir="mis-presets">Administrar</button>
+          </div>
+          <ul id="lista-propios-inicio" class="lista-presets"></ul>
+        </div>
+
+        <h2 class="titulo-seccion">Presets</h2>
+        <ul id="lista-presets-inicio" class="lista-presets"></ul>
+      </div>
+    </section>
+
+    <!-- CONFIGURACIÓN -->
+    <section id="pantalla-config" class="pantalla" hidden aria-labelledby="config-titulo">
+      <header class="barra">
+        <button class="icono" data-volver aria-label="Volver"><svg><use href="#i-atras"/></svg></button>
+        <div class="barra-titulo">
+          <h1 id="config-titulo">Rondas</h1>
+          <span id="config-subtitulo" class="sub"></span>
+        </div>
+        <span class="icono-placeholder"></span>
+      </header>
+      <div class="contenido">
+        <ul id="campos" class="campos"></ul>
+        <p id="config-total" class="total"></p>
+      </div>
+      <footer class="pie">
+        <button id="btn-guardar-preset" class="boton secundario">Guardar preset</button>
+        <button id="btn-empezar" class="boton primario grande">Empezar</button>
+      </footer>
+    </section>
+
+    <!-- TIMER -->
+    <section id="pantalla-timer" class="pantalla" hidden aria-label="Timer">
+      <header class="timer-barra">
+        <button id="btn-salir" class="icono" aria-label="Salir del entrenamiento"><svg><use href="#i-cerrar"/></svg></button>
+        <span id="t-nombre" class="t-nombre"></span>
+        <span id="t-total" class="t-total" aria-label="Tiempo total restante"></span>
+      </header>
+      <div id="t-centro" class="timer-centro" role="button" tabindex="-1" aria-label="Tocar para pausar o reanudar">
+        <div id="t-fase" class="t-fase">Preparate</div>
+        <div id="t-tiempo" class="t-tiempo" aria-live="off">0:10</div>
+        <div id="t-info" class="t-info"></div>
+        <div id="t-siguiente" class="t-siguiente"></div>
+      </div>
+      <div class="t-progreso" aria-hidden="true"><div id="t-barra"></div></div>
+      <div class="timer-controles">
+        <button id="btn-reiniciar" class="control" aria-label="Reiniciar"><svg><use href="#i-reiniciar"/></svg><span>Reiniciar</span></button>
+        <button id="btn-pausa" class="control principal" aria-label="Pausar"><svg><use href="#i-pausa"/></svg></button>
+        <button id="btn-saltar" class="control" aria-label="Saltar fase"><svg><use href="#i-saltar"/></svg><span>Saltar</span></button>
+      </div>
+    </section>
+
+    <!-- RESUMEN -->
+    <section id="pantalla-resumen" class="pantalla" hidden aria-labelledby="resumen-titulo">
+      <div class="contenido resumen">
+        <p class="resumen-eyebrow" id="resumen-nombre"></p>
+        <h1 id="resumen-titulo">¡Terminaste!</h1>
+        <dl class="resumen-datos">
+          <div><dt>Tiempo total</dt><dd id="r-tiempo">0:00</dd></div>
+          <div><dt id="r-rondas-label">Rondas completadas</dt><dd id="r-rondas">0</dd></div>
+        </dl>
+      </div>
+      <footer class="pie">
+        <button class="boton secundario" data-ir="inicio">Inicio</button>
+        <button id="btn-repetir" class="boton primario grande">Repetir</button>
+      </footer>
+    </section>
+
+    <!-- MIS PRESETS -->
+    <section id="pantalla-mis-presets" class="pantalla" hidden aria-labelledby="mis-presets-titulo">
+      <header class="barra">
+        <button class="icono" data-volver aria-label="Volver"><svg><use href="#i-atras"/></svg></button>
+        <div class="barra-titulo"><h1 id="mis-presets-titulo">Mis presets</h1></div>
+        <span class="icono-placeholder"></span>
+      </header>
+      <div class="contenido" id="mis-presets-contenido"></div>
+    </section>
+
+    <!-- AJUSTES -->
+    <section id="pantalla-ajustes" class="pantalla" hidden aria-labelledby="ajustes-titulo">
+      <header class="barra">
+        <button class="icono" data-volver aria-label="Volver"><svg><use href="#i-atras"/></svg></button>
+        <div class="barra-titulo"><h1 id="ajustes-titulo">Ajustes</h1></div>
+        <span class="icono-placeholder"></span>
+      </header>
+      <div class="contenido">
+        <ul class="campos">
+          <li class="campo campo-columna">
+            <span class="campo-label">Sonido</span>
+            <div class="segmentado" role="radiogroup" aria-label="Sonido" id="aj-sonido">
+              <button role="radio" data-valor="campana">Campana</button>
+              <button role="radio" data-valor="beep">Beep</button>
+              <button role="radio" data-valor="silencio">Silencio</button>
+            </div>
+          </li>
+          <li class="campo campo-columna">
+            <label class="campo-label" for="aj-volumen">Volumen</label>
+            <input type="range" id="aj-volumen" min="0" max="1" step="0.05">
+          </li>
+          <li class="campo">
+            <label class="campo-label" for="aj-vibracion">Vibración<span class="ayuda" id="aj-vibracion-ayuda"></span></label>
+            <input type="checkbox" id="aj-vibracion" class="switch">
+          </li>
+          <li class="campo" id="aj-ultimos"></li>
+          <li class="campo" id="aj-tablas"></li>
+        </ul>
+        <button id="btn-probar" class="boton secundario ancho">Probar sonido</button>
+
+        <h2 class="titulo-seccion">Instalar en el celular</h2>
+        <div class="nota">
+          <p><strong>Android (Chrome):</strong> menú ⋮ → “Instalar app” o “Agregar a pantalla principal”.</p>
+          <p><strong>iPhone (Safari):</strong> botón Compartir → “Agregar a pantalla de inicio”.</p>
+          <p id="btn-instalar-wrap" hidden><button id="btn-instalar" class="boton primario ancho">Instalar ahora</button></p>
+        </div>
+        <h2 class="titulo-seccion">En iPhone</h2>
+        <div class="nota">
+          <p>Desactivá el modo silencio para escuchar los avisos. La web no puede vibrar en iPhone, y si se bloquea la pantalla el timer corrige el tiempo al volver pero los sonidos de ese lapso se pierden.</p>
+        </div>
+        <p class="version">Timer Training · v0.1 · Todo se guarda solo en este dispositivo.</p>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="dlg-preset" class="dialogo">
+    <form method="dialog">
+      <h2>Guardar preset</h2>
+      <label class="campo-label" for="dlg-preset-nombre">Nombre</label>
+      <input id="dlg-preset-nombre" name="nombre" maxlength="40" autocomplete="off" required>
+      <div class="dialogo-botones">
+        <button value="cancelar" formnovalidate class="boton secundario">Cancelar</button>
+        <button value="nuevo" id="dlg-preset-nuevo" class="boton secundario">Guardar como nuevo</button>
+        <button value="guardar" id="dlg-preset-guardar" class="boton primario">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-confirmar" class="dialogo">
+    <form method="dialog">
+      <h2 id="dlg-confirmar-titulo"></h2>
+      <p id="dlg-confirmar-texto"></p>
+      <div class="dialogo-botones">
+        <button value="no" class="boton secundario">Cancelar</button>
+        <button value="si" id="dlg-confirmar-si" class="boton primario">Aceptar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="aviso" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
