@@ -18,7 +18,7 @@ export class Timer {
     this.fases = fases;
     this.now = opciones.now || (() => performance.now());
     this.onEvento = opciones.onEvento || (() => {});
-    this.avisoUltimos = opciones.avisoUltimos ?? 3;
+    this.avisoUltimos = opciones.avisoUltimos ?? 5;
     this.avisoTablas = opciones.avisoTablas ?? 10;
 
     // Inicio acumulado (en segundos) de cada fase, para el tiempo total.

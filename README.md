@@ -20,6 +20,7 @@ public/            lo que se publica (HTML, CSS, JS, íconos)
   js/storage.js    presets propios y ajustes (localStorage)
   js/presets.js    presets precargados
   icons/
+  fonts/           Archivo (variable, licencia OFL), incluida para funcionar offline
 tools/             scripts Python
   serve.py         servidor local
   make_icons.py    genera los íconos PNG (Pillow)
@@ -89,7 +90,9 @@ Puntos que el documento dejaba pendientes (sección 12) y cómo quedaron por aho
 - **Último descanso:** no se hace Descansar después de la última ronda (ni de la última ronda de cada ciclo en Tabata).
 - **Cronómetro:** solo aviso automático por lapso; el botón para marcar vueltas a mano queda para más adelante.
 - **Sonidos:** sintetizados con Web Audio (campana, beep, “tablas”) en vez de archivos .mp3, para que la app pese menos y funcione offline sin descargas extra.
-- **Estilo:** tema oscuro, colores por fase según la sección 5.2.
+- **Estilo:** dirección “cartelera de pelea”: azul profundo, dorado y rojo; tipografía Archivo extra condensada para números y títulos. Colores por fase según la sección 5.2.
+- **Computadora:** desde 900 px de ancho la app se reacomoda (presets en grilla, configuración en dos columnas). En el timer: <kbd>Espacio</kbd> pausa, <kbd>→</kbd> saltar, <kbd>R</kbd> reiniciar, <kbd>F</kbd> pantalla completa, <kbd>Esc</kbd> salir. En la configuración, <kbd>Enter</kbd> empieza.
+- **Aviso de últimos segundos:** 5 s por defecto (beep por segundo y fondo naranja). Se cambia en Ajustes.
 - **Gesto “atrás” del celular** durante un entrenamiento: pausa y pregunta antes de salir.
 - **Rondas completadas** del resumen: cuentan solo las rondas que llegaron al final (las saltadas no).
 

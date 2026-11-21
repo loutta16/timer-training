@@ -1,6 +1,6 @@
 // sw.js — Service worker: guarda los archivos para usar la app sin conexión.
 // Al publicar cambios, subir VERSION para que los celulares descarguen lo nuevo.
-const VERSION = 'tt-v0.1.0';
+const VERSION = 'tt-v0.3.0';
 
 const ARCHIVOS = [
   './',
@@ -13,6 +13,7 @@ const ARCHIVOS = [
   'js/audio.js',
   'js/storage.js',
   'js/presets.js',
+  'fonts/archivo.woff2',
   'icons/icon.svg',
   'icons/favicon-32.png',
   'icons/icon-192.png',

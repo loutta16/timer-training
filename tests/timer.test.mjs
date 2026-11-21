@@ -67,8 +67,10 @@ test('El motor recorre la sesión de Boxeo y termina a los 670 s', () => {
   const fin = eventos.find(([t]) => t === 'fin');
   assert.equal(fin[1].resumen.rondasCompletas, 3);
   assert.equal(Math.round(fin[1].resumen.tiempoActivo), 670);
-  // 3 beeps al final de Preparate, de cada Entrenar y de cada Descansar: 6 fases × 3
-  assert.equal(eventos.filter(([t]) => t === 'cuenta').length, 18);
+  // 5 beeps al final de Preparate, de cada Entrenar y de cada Descansar: 6 fases × 5
+  const cuentas = eventos.filter(([t]) => t === 'cuenta');
+  assert.equal(cuentas.length, 30);
+  assert.deepEqual(cuentas.slice(0, 5).map(([, d]) => d.segundos), [5, 4, 3, 2, 1]);
   // aviso de "tablas" en cada una de las 3 rondas
   assert.equal(eventos.filter(([t]) => t === 'tablas').length, 3);
 });

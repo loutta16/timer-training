@@ -185,12 +185,12 @@ function itemPreset(p, propio) {
   const cfg = normalizar(p);
   const total = cfg.modo === 'cronometro' ? '' : formatoTiempo(duracionTotal(armarSecuencia(cfg)));
   li.innerHTML = `
-    <button class="preset" style="--acento: var(--c-modo-${cfg.modo})">
-      <span class="preset-texto">
+    <button class="preset">
+      <span class="preset-fila">
         <span class="preset-nombre">${escapar(p.nombre)}</span>
-        <span class="preset-desc">${escapar(MODOS[cfg.modo].nombre)} · ${escapar(describir(cfg))}</span>
+        <span class="preset-total">${total || '∞'}</span>
       </span>
-      <span class="preset-total">${total}</span>
+      <span class="preset-desc">${escapar(describir(cfg))}</span>
     </button>`;
   li.querySelector('button').addEventListener('click', () => {
     abrirConfig(cfg, { tipo: propio ? 'propio' : 'preset', id: p.id, nombre: p.nombre });
@@ -204,6 +204,11 @@ function renderInicio() {
   listaPropios.replaceChildren(...propios.map((p) => itemPreset(p, true)));
   $('#bloque-propios-inicio').hidden = propios.length === 0;
   $('#lista-presets-inicio').replaceChildren(...PRESETS.map((p) => itemPreset(p, false)));
+  $$('[data-detalle-modo]').forEach((el) => {
+    const modo = el.dataset.detalleModo;
+    const ultima = cargarUltima(modo);
+    el.textContent = describir(ultima && ultima.modo === modo ? ultima : DEFAULTS[modo]);
+  });
 }
 
 $$('.modo').forEach((btn) => {
@@ -315,6 +320,7 @@ function iniciarSesion() {
   btnSaltar.querySelector('use').setAttribute('href', esCrono ? '#i-stop' : '#i-saltar');
   btnSaltar.querySelector('span').textContent = esCrono ? 'Terminar' : 'Saltar';
   btnSaltar.setAttribute('aria-label', esCrono ? 'Terminar' : 'Saltar fase');
+  $('#atajo-saltar').textContent = esCrono ? 'terminar' : 'saltar';
   $('#t-nombre').textContent = app.origen?.nombre || MODOS[app.cfg.modo].nombre;
   app.faseColor = null;
   app.timer.iniciar();
@@ -324,6 +330,7 @@ function iniciarSesion() {
 }
 
 function detenerTimer() {
+  salirPantallaCompleta();
   clearInterval(app.intervalo);
   app.intervalo = null;
   app.timer = null;
@@ -506,6 +513,7 @@ $('#btn-salir').addEventListener('click', pedirSalir);
 /* ---------------------------------------------------------------- resumen */
 
 function mostrarResumen(r) {
+  salirPantallaCompleta();
   clearInterval(app.intervalo);
   app.intervalo = null;
   soltarWakeLock();
@@ -529,6 +537,55 @@ $('#btn-repetir').addEventListener('click', () => {
   audio.desbloquear();
   iniciarSesion();
   reemplazar('timer');
+});
+
+/* ------------------------------------------------- computadora: teclado */
+
+function salirPantallaCompleta() {
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+
+function alternarPantallaCompleta() {
+  if (!document.fullscreenEnabled) return;
+  if (document.fullscreenElement) salirPantallaCompleta();
+  else document.documentElement.requestFullscreen().catch(() => {});
+}
+
+const btnPantalla = $('#btn-pantalla-completa');
+btnPantalla.hidden = !document.fullscreenEnabled;
+btnPantalla.addEventListener('click', alternarPantallaCompleta);
+
+// Con mouse, los controles del timer no se quedan con el foco: así Espacio siempre pausa.
+$$('#pantalla-timer button').forEach((b) => b.addEventListener('mousedown', (e) => e.preventDefault()));
+
+document.addEventListener('keydown', (e) => {
+  if (e.altKey || e.ctrlKey || e.metaKey || e.repeat) return;
+  if (document.querySelector('dialog[open]')) return;
+  const enControl = e.target.closest('button, input, select, textarea');
+
+  if (app.pantalla === 'timer' && timerActivo()) {
+    if (enControl && (e.key === ' ' || e.key === 'Enter')) return; // el botón enfocado responde solo
+    switch (e.key) {
+      case ' ': e.preventDefault(); alternarPausa(); break;
+      case 'ArrowRight': e.preventDefault(); $('#btn-saltar').click(); break;
+      case 'r': case 'R': $('#btn-reiniciar').click(); break;
+      case 'f': case 'F': alternarPantallaCompleta(); break;
+      case 'Escape':
+        // Se abre después del evento: si no, la misma tecla cierra el diálogo recién abierto.
+        e.preventDefault();
+        if (!document.fullscreenElement) setTimeout(pedirSalir, 0);
+        break;
+      default: break;
+    }
+    return;
+  }
+  if (enControl) return;
+  if (e.key === 'Enter') {
+    if (app.pantalla === 'config') $('#btn-empezar').click();
+    else if (app.pantalla === 'resumen') $('#btn-repetir').click();
+  } else if (e.key === 'Escape' && app.pantalla !== 'inicio' && app.pantalla !== 'timer') {
+    history.back();
+  }
 });
 
 /* ------------------------------------------------------------- wake lock */

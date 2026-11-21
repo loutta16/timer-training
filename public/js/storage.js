@@ -11,7 +11,7 @@ export const AJUSTES_DEFECTO = {
   sonido: 'campana', // campana | beep | silencio
   volumen: 0.8,
   vibracion: true,
-  avisoUltimos: 3,
+  avisoUltimos: 5,
   avisoTablas: 10,
 };
 
@@ -33,8 +33,13 @@ function escribir(clave, valor) {
   }
 }
 
+const VERSION_AJUSTES = 2;
+
 export function cargarAjustes() {
-  return { ...AJUSTES_DEFECTO, ...leer(CLAVES.ajustes, {}) };
+  const guardados = leer(CLAVES.ajustes, {});
+  // v2: el aviso de últimos segundos pasa de 3 a 5 por defecto.
+  if ((guardados.v || 1) < 2 && guardados.avisoUltimos === 3) delete guardados.avisoUltimos;
+  return { ...AJUSTES_DEFECTO, ...guardados, v: VERSION_AJUSTES };
 }
 
 export function guardarAjustes(ajustes) {

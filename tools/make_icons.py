@@ -12,11 +12,12 @@ from PIL import Image, ImageDraw
 RAIZ = Path(__file__).resolve().parent.parent
 DESTINO = RAIZ / "public" / "icons"
 
-FONDO = (15, 17, 21)
-ANILLO = (43, 48, 59)
-VERDE = (34, 197, 94)
-ROJO = (220, 38, 38)
-BLANCO = (243, 244, 246)
+FONDO = (10, 22, 48)
+ANILLO = (40, 69, 133)
+VERDE = (24, 160, 92)
+ROJO = (224, 54, 44)
+BLANCO = (238, 242, 251)
+ORO = (245, 184, 46)
 
 ESCALA = 4  # se dibuja grande y se reduce para suavizar bordes
 
@@ -40,7 +41,7 @@ def dibujar(tamano: int, contenido: float, redondeado: bool) -> Image.Image:
     # Botón superior del cronómetro
     bw, bh = s * contenido * 0.13, s * contenido * 0.07
     top = cy - r - grosor / 2 - bh * 1.35
-    d.rounded_rectangle([c - bw / 2, top, c + bw / 2, top + bh], radius=int(bh / 3), fill=BLANCO)
+    d.rounded_rectangle([c - bw / 2, top, c + bw / 2, top + bh], radius=int(bh / 3), fill=ORO)
 
     caja = [c - r, cy - r, c + r, cy + r]
     d.ellipse(caja, outline=ANILLO, width=grosor)

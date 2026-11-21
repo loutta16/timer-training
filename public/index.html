@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="description" content="Timer de entrenamiento: Rondas, Tabata y Cronómetro. Presets de Boxeo, Kickboxing, Muay Thai y MMA.">
-  <meta name="theme-color" content="#0f1115">
+  <meta name="theme-color" content="#0a1630">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,6 +14,7 @@
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
   <script type="module" src="js/app.js"></script>
 </head>
@@ -26,6 +27,7 @@
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
     <symbol id="i-saltar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6l7 6-7 6z"/><path d="M18 6v12"/></g></symbol>
     <symbol id="i-reiniciar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></g></symbol>
+    <symbol id="i-pantalla" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></symbol>
     <symbol id="i-menos" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
     <symbol id="i-mas" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
@@ -37,22 +39,25 @@
     <!-- INICIO -->
     <section id="pantalla-inicio" class="pantalla" aria-labelledby="titulo-app">
       <header class="barra">
-        <h1 id="titulo-app" class="marca">Timer<span>Training</span></h1>
+        <h1 id="titulo-app" class="marca"><span>Timer</span><span>Training</span></h1>
         <button class="icono" data-ir="ajustes" aria-label="Ajustes"><svg><use href="#i-ajustes"/></svg></button>
       </header>
       <div class="contenido">
         <div class="modos">
-          <button class="modo" data-modo="rondas" style="--acento: var(--c-entrenar)">
+          <button class="modo modo-principal" data-modo="rondas">
             <span class="modo-nombre">Rondas</span>
-            <span class="modo-desc">Entrenar + descansar. Boxeo, Kickboxing, Muay Thai, MMA.</span>
+            <span class="modo-desc">Boxeo, Kickboxing, Muay Thai, MMA</span>
+            <span class="modo-detalle" data-detalle-modo="rondas"></span>
           </button>
-          <button class="modo" data-modo="tabata" style="--acento: var(--c-descanso-ciclos)">
+          <button class="modo" data-modo="tabata">
             <span class="modo-nombre">Tabata</span>
-            <span class="modo-desc">Rondas agrupadas en ciclos, con descanso entre ciclos.</span>
+            <span class="modo-desc">Rondas en ciclos</span>
+            <span class="modo-detalle" data-detalle-modo="tabata"></span>
           </button>
-          <button class="modo" data-modo="cronometro" style="--acento: var(--c-enfriamiento)">
-            <span class="modo-nombre">Cronómetro</span>
-            <span class="modo-desc">Cuenta hacia adelante y suena en cada lapso.</span>
+          <button class="modo" data-modo="cronometro">
+            <span class="modo-nombre">Crono</span>
+            <span class="modo-desc">Aviso por lapso</span>
+            <span class="modo-detalle" data-detalle-modo="cronometro"></span>
           </button>
         </div>
 
@@ -64,7 +69,7 @@
           <ul id="lista-propios-inicio" class="lista-presets"></ul>
         </div>
 
-        <h2 class="titulo-seccion">Presets</h2>
+        <div class="titulo-seccion"><h2>Presets</h2></div>
         <ul id="lista-presets-inicio" class="lista-presets"></ul>
       </div>
     </section>
@@ -79,14 +84,17 @@
         </div>
         <span class="icono-placeholder"></span>
       </header>
-      <div class="contenido">
+      <div class="contenido config-layout">
+        <div class="config-resumen">
+          <p id="config-total" class="total"></p>
+        </div>
         <ul id="campos" class="campos"></ul>
-        <p id="config-total" class="total"></p>
+        <div class="pie config-acciones">
+          <button id="btn-guardar-preset" class="boton secundario">Guardar preset</button>
+          <button id="btn-empezar" class="boton primario grande">Empezar</button>
+          <p class="atajos solo-escritorio" aria-hidden="true"><span><kbd>Enter</kbd> empezar</span><span><kbd>Esc</kbd> volver</span></p>
+        </div>
       </div>
-      <footer class="pie">
-        <button id="btn-guardar-preset" class="boton secundario">Guardar preset</button>
-        <button id="btn-empezar" class="boton primario grande">Empezar</button>
-      </footer>
     </section>
 
     <!-- TIMER -->
@@ -95,6 +103,7 @@
         <button id="btn-salir" class="icono" aria-label="Salir del entrenamiento"><svg><use href="#i-cerrar"/></svg></button>
         <span id="t-nombre" class="t-nombre"></span>
         <span id="t-total" class="t-total" aria-label="Tiempo total restante"></span>
+        <button id="btn-pantalla-completa" class="icono solo-escritorio" aria-label="Pantalla completa" hidden><svg><use href="#i-pantalla"/></svg></button>
       </header>
       <div id="t-centro" class="timer-centro" role="button" tabindex="-1" aria-label="Tocar para pausar o reanudar">
         <div id="t-fase" class="t-fase">Preparate</div>
@@ -108,6 +117,13 @@
         <button id="btn-pausa" class="control principal" aria-label="Pausar"><svg><use href="#i-pausa"/></svg></button>
         <button id="btn-saltar" class="control" aria-label="Saltar fase"><svg><use href="#i-saltar"/></svg><span>Saltar</span></button>
       </div>
+      <p class="atajos solo-escritorio" aria-hidden="true">
+        <span><kbd>Espacio</kbd> pausa</span>
+        <span><kbd>→</kbd> <span id="atajo-saltar">saltar</span></span>
+        <span><kbd>R</kbd> reiniciar</span>
+        <span><kbd>F</kbd> pantalla completa</span>
+        <span><kbd>Esc</kbd> salir</span>
+      </p>
     </section>
 
     <!-- RESUMEN -->
@@ -166,17 +182,17 @@
         </ul>
         <button id="btn-probar" class="boton secundario ancho">Probar sonido</button>
 
-        <h2 class="titulo-seccion">Instalar en el celular</h2>
+        <div class="titulo-seccion"><h2>Instalar en el celular</h2></div>
         <div class="nota">
           <p><strong>Android (Chrome):</strong> menú ⋮ → “Instalar app” o “Agregar a pantalla principal”.</p>
           <p><strong>iPhone (Safari):</strong> botón Compartir → “Agregar a pantalla de inicio”.</p>
           <p id="btn-instalar-wrap" hidden><button id="btn-instalar" class="boton primario ancho">Instalar ahora</button></p>
         </div>
-        <h2 class="titulo-seccion">En iPhone</h2>
+        <div class="titulo-seccion"><h2>En iPhone</h2></div>
         <div class="nota">
           <p>Desactivá el modo silencio para escuchar los avisos. La web no puede vibrar en iPhone, y si se bloquea la pantalla el timer corrige el tiempo al volver pero los sonidos de ese lapso se pierden.</p>
         </div>
-        <p class="version">Timer Training · v0.1 · Todo se guarda solo en este dispositivo.</p>
+        <p class="version">Timer Training v0.3. Tus presets y ajustes se guardan solo en este dispositivo.</p>
       </div>
     </section>
   </main>
